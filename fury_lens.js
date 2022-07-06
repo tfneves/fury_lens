@@ -1,33 +1,58 @@
 let FuryLens = {
     magnifier: (img) => {
         createMagnifier(img);
+    },
+    configs: {
+        attributeKey: "",
+        setAttributeKey: (key) => {this.attributeKey = key},
+        getAttribute: () => {return this.attributeKey},
+        elementObserver: "",
+        getElementObserver: () => {return this.elementObserver},
+        timeout: 5000 //Miliseconds
+    },
+    initialize: () => {
+
+        let observerElementFinded = false
+
+        setTimeout(()=>{
+            if(!observerElementFinded){
+                console.error("Timeout");
+                return;
+            }
+        }, FuryLens.configs.timeout);
+
+        if(FuryLens.configs.attributeKey === "" || FuryLens.configs.attributeKey === undefined || FuryLens.configs.attributeKey === null){
+            console.error("attributeKey not defined");
+            return;
+        }
+
+        if(FuryLens.configs.elementObserver === "" || FuryLens.configs.elementObserver === undefined || FuryLens.configs.elementObserver === null){
+            console.error("elementObserverId not defined");
+            return;
+        }
+
+        let d = setInterval(()=>{
+            if(document.getElementById(FuryLens.configs.elementObserver) != null){
+                observerElementFinded = true;
+                clearInterval(d);
+
+                const config = { attributes: true, childList: true, subtree: true };
+                const callback = function(mutationList, observer) {
+                    for(const mutation of mutationList) {
+                        mutation.addedNodes.forEach((node)=>{
+                            if(node.nodeName === "IMG" && node.hasAttribute(FuryLens.configs.attributeKey)) {
+                                createMagnifier(node);
+                            }
+                        });
+                    }
+                };
+                const observer = new MutationObserver(callback);
+                observer.observe(document.getElementById(FuryLens.configs.elementObserver), config);
+            }
+        });
     }
 }
-initialize("furylens", "main");
 
-
-function initialize(attributeKey, elementObserverId)
-{
-    let d = setInterval(()=>{
-        if(document.getElementById(elementObserverId) != null){
-            clearInterval(d);
-
-            let elementObserver = document.getElementById(elementObserverId);
-            const config = { attributes: true, childList: true, subtree: true };
-            const callback = function(mutationList, observer) {
-                for(const mutation of mutationList) {
-                    mutation.addedNodes.forEach((node)=>{
-                        if(node.nodeName === "IMG" && node.hasAttribute(attributeKey)) {
-                            createMagnifier(node);
-                        }
-                    });
-                }
-            };
-            const observer = new MutationObserver(callback);
-            observer.observe(elementObserver, config);
-        }
-    });
-}
 
 function createZoom(img, magnifierValue, zoom){
     let glass, w, h, bw;
