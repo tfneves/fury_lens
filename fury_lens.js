@@ -41,7 +41,7 @@ let FuryLens = {
                     for(const mutation of mutationList) {
                         mutation.addedNodes.forEach((node)=>{
                             if(node.nodeName === "IMG" && node.hasAttribute(FuryLens.configs.attributeKey)) {
-                                createMagnifier(node);
+                                createMagnifier(node.getAttribute("id"));
                             }
                         });
                     }
@@ -143,22 +143,21 @@ function cordenatesPreventOutsideImage(cordX, cordY, img, glass, zoom)
 
 function createMagnifier(baseImg){
     createDOMSkeleton(baseImg);
-    let img = document.getElementById(`${baseImg.getAttribute("id")}`);
 
     let r = setInterval(()=>{
         if(
-            document.getElementById(`sizeMagnifier-${img.getAttribute("id")}`) !== null &&
-            document.getElementById(`zoomMagnifier-${img.getAttribute("id")}`) !== null
+            document.getElementById(`sizeMagnifier-${baseImg}`) !== null &&
+            document.getElementById(`zoomMagnifier-${baseImg}`) !== null
         ){
             clearInterval(r);
 
             let glass, sizeMagnifier, zoomMagnifier;
-            sizeMagnifier = document.getElementById(`sizeMagnifier-${img.getAttribute("id")}`);
-            zoomMagnifier = document.getElementById(`zoomMagnifier-${img.getAttribute("id")}`);
+            sizeMagnifier = document.getElementById(`sizeMagnifier-${baseImg}`);
+            zoomMagnifier = document.getElementById(`zoomMagnifier-${baseImg}`);
 
             do{
-                self.createZoom(img, sizeMagnifier.value, zoomMagnifier.value);
-                glass = document.getElementById(`glass-${img.getAttribute("id")}`);
+                self.createZoom(document.getElementById(baseImg), sizeMagnifier.value, zoomMagnifier.value);
+                glass = document.getElementById(`glass-${baseImg}`);
             }while(glass == null)
 
             document.addEventListener("keypress", (e)=>{
@@ -173,12 +172,12 @@ function createMagnifier(baseImg){
                     glass.style.display = "none";
                 else{
                     glass.style.display = "block";
-                    self.createZoom(img, sizeMagnifier.value, zoomMagnifier.value);
+                    self.createZoom(document.getElementById(baseImg), sizeMagnifier.value, zoomMagnifier.value);
                 }
             });
 
             zoomMagnifier.addEventListener("input", ()=>{
-                self.createZoom(img, sizeMagnifier.value, zoomMagnifier.value);
+                self.createZoom(document.getElementById(baseImg), sizeMagnifier.value, zoomMagnifier.value);
             });
         }
     },800);
@@ -187,36 +186,42 @@ function createMagnifier(baseImg){
 
 function createDOMSkeleton(baseImg)
 {
-    let tmpImg = baseImg;
-    baseImg.outerHTML = `
-        <div style="margin-top: 30px">
-            <div style="border: solid 1px ; border-radius: 4px; margin-bottom: 20px">
-                <div style="padding: 10px 0 10px 5px">
-                    <label>Tamanho da lupa</label>
-                    <div>
-                        <input type="range" id="sizeMagnifier-${tmpImg.getAttribute("id")}" value="0" min="0" max="1000" style="width: 50%;">
+    let r = setInterval(()=>{
+        if(document.getElementById(baseImg) !== null){
+            clearInterval(r);
+
+            let tmpImg = document.getElementById(baseImg);
+            document.getElementById(baseImg).outerHTML = `
+                <div style="margin-top: 30px">
+                    <div style="border: solid 1px ; border-radius: 4px; margin-bottom: 20px">
+                        <div style="padding: 10px 0 10px 5px">
+                            <label>Tamanho da lupa</label>
+                            <div>
+                                <input type="range" id="sizeMagnifier-${tmpImg.getAttribute("id")}" value="0" min="0" max="1000" style="width: 50%;">
+                            </div>
+                        </div>
+                        <div style="padding: 10px 0 10px 5px">
+                            <label>Zoom da lupa</label>
+                            <div>
+                                <input type="range" id="zoomMagnifier-${tmpImg.getAttribute("id")}" value="2" min="2" max="10" list="tickmarks-${tmpImg.getAttribute("id")}" style="width: 50%;">
+                                <datalist id="tickmarks-${tmpImg.getAttribute("id")}" style="display: flex; justify-content: space-between; width: 50%;">
+                                  <option value="2" label="2x">
+                                  <option value="3" label="3x">
+                                  <option value="4" label="4x">
+                                  <option value="5" label="5x">
+                                  <option value="6" label="6x">
+                                  <option value="7" label="7x">
+                                  <option value="8" label="8x">
+                                  <option value="9" label="9x">
+                                  <option value="10" label="10x">
+                                </datalist>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div style="padding: 10px 0 10px 5px">
-                    <label>Zoom da lupa</label>
                     <div>
-                        <input type="range" id="zoomMagnifier-${tmpImg.getAttribute("id")}" value="2" min="2" max="10" list="tickmarks-${baseImg.getAttribute("id")}" style="width: 50%;">
-                        <datalist id="tickmarks-${tmpImg.getAttribute("id")}" style="display: flex; justify-content: space-between; width: 50%;">
-                          <option value="2" label="2x">
-                          <option value="3" label="3x">
-                          <option value="4" label="4x">
-                          <option value="5" label="5x">
-                          <option value="6" label="6x">
-                          <option value="7" label="7x">
-                          <option value="8" label="8x">
-                          <option value="9" label="9x">
-                          <option value="10" label="10x">
-                        </datalist>
+                        <div style="position: relative; box-sizing: border-box;">${tmpImg.outerHTML}</div>
                     </div>
-                </div>
-            </div>
-            <div>
-                <div style="position: relative; box-sizing: border-box;">${tmpImg.outerHTML}</div>
-            </div>
-        </div>`;
+                </div>`;
+        }
+    },800);
 }
