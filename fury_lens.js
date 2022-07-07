@@ -3,53 +3,11 @@ let FuryLens = {
         createMagnifier(img);
     },
     configs: {
-        attributeKey: "",
-        elementObserver: "",
         timeout: 5000, // Miliseconds
-        language: "" // default language is pt-BR
-    },
-    /*initialize: () => {
-
-        let observerElementFinded = false
-
-        setTimeout(()=>{
-            if(!observerElementFinded){
-                console.error("Timeout");
-                return;
-            }
-        }, FuryLens.configs.timeout);
-
-        if(FuryLens.configs.attributeKey === "" || FuryLens.configs.attributeKey === undefined || FuryLens.configs.attributeKey === null){
-            console.error("attributeKey not defined");
-            return;
-        }
-
-        if(FuryLens.configs.elementObserver === "" || FuryLens.configs.elementObserver === undefined || FuryLens.configs.elementObserver === null){
-            console.error("elementObserverId not defined");
-            return;
-        }
-
-        let d = setInterval(()=>{
-            if(document.getElementById(FuryLens.configs.elementObserver) != null){
-                observerElementFinded = true;
-                clearInterval(d);
-
-                const config = { attributes: true, childList: true, subtree: true };
-                const callback = function(mutationList, observer) {
-                    for(const mutation of mutationList) {
-                        mutation.addedNodes.forEach((node)=>{
-                            console.log(node)
-                            if(node.nodeName === "IMG" && node.hasAttribute(FuryLens.configs.attributeKey)) {
-                                createMagnifier(node.getAttribute("id"));
-                            }
-                        });
-                    }
-                };
-                const observer = new MutationObserver(callback);
-                observer.observe(document.getElementById(FuryLens.configs.elementObserver), config);
-            }
-        });
-    }*/
+        language: "", // default language is pt-BR
+        maxMagnifierSize: 1000, // sized in pixel (px)
+        minMagnifierSize: 0 // sized in pixel (px)
+    }
 }
 
 
@@ -215,7 +173,15 @@ function createDOMSkeleton(baseImg)
                         <div style="padding: 10px 0 10px 5px">
                             <label>${label1}</label>
                             <div>
-                                <input type="range" id="sizeMagnifier-${tmpImg.getAttribute("id")}" value="0" min="0" max="1000" style="width: 50%;">
+                                <input 
+                                    type="range" 
+                                    id="sizeMagnifier-${tmpImg.getAttribute("id")}" 
+                                    value="${FuryLens.configs.minMagnifierSize}" 
+                                    min="${FuryLens.configs.minMagnifierSize}" 
+                                    max="${FuryLens.configs.maxMagnifierSize}" 
+                                    style="width: 50%;"
+                                    disabled="${FuryLens.configs.minMagnifierSize == FuryLens.configs.maxMagnifierSize}"
+                                >
                             </div>
                         </div>
                         <div style="padding: 10px 0 10px 5px">
