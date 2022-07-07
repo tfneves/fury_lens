@@ -4,13 +4,11 @@ let FuryLens = {
     },
     configs: {
         attributeKey: "",
-        setAttributeKey: (key) => {this.attributeKey = key},
-        getAttribute: () => {return this.attributeKey},
         elementObserver: "",
-        getElementObserver: () => {return this.elementObserver},
-        timeout: 5000 //Miliseconds
+        timeout: 5000, // Miliseconds
+        language: "" // default language is pt-BR
     },
-    initialize: () => {
+    /*initialize: () => {
 
         let observerElementFinded = false
 
@@ -40,6 +38,7 @@ let FuryLens = {
                 const callback = function(mutationList, observer) {
                     for(const mutation of mutationList) {
                         mutation.addedNodes.forEach((node)=>{
+                            console.log(node)
                             if(node.nodeName === "IMG" && node.hasAttribute(FuryLens.configs.attributeKey)) {
                                 createMagnifier(node.getAttribute("id"));
                             }
@@ -50,7 +49,7 @@ let FuryLens = {
                 observer.observe(document.getElementById(FuryLens.configs.elementObserver), config);
             }
         });
-    }
+    }*/
 }
 
 
@@ -186,6 +185,25 @@ function createMagnifier(baseImg){
 
 function createDOMSkeleton(baseImg)
 {
+    let label1, label2;
+
+    switch (FuryLens.configs.language){
+        case "en":
+            label1 = "Magnifier size";
+            label2 = "Magnification size";
+            break;
+
+        case "es":
+            label1 = "Tamaño de gafa"
+            label2 = "Tamaño de la ampliación"
+            break;
+
+        default:
+            label1 = "Tamanho da lupa"
+            label2 = "Zoom da lupa"
+            break;
+    }
+
     let r = setInterval(()=>{
         if(document.getElementById(baseImg) !== null){
             clearInterval(r);
@@ -193,28 +211,30 @@ function createDOMSkeleton(baseImg)
             let tmpImg = document.getElementById(baseImg);
             document.getElementById(baseImg).outerHTML = `
                 <div style="margin-top: 30px">
-                    <div style="border: solid 1px ; border-radius: 4px; margin-bottom: 20px">
+                    <div style="border: solid 1px ; border-radius: 4px; margin-bottom: 20px; text-align: center !important">
                         <div style="padding: 10px 0 10px 5px">
-                            <label>Tamanho da lupa</label>
+                            <label>${label1}</label>
                             <div>
                                 <input type="range" id="sizeMagnifier-${tmpImg.getAttribute("id")}" value="0" min="0" max="1000" style="width: 50%;">
                             </div>
                         </div>
                         <div style="padding: 10px 0 10px 5px">
-                            <label>Zoom da lupa</label>
+                            <label>${label2}</label>
                             <div>
                                 <input type="range" id="zoomMagnifier-${tmpImg.getAttribute("id")}" value="2" min="2" max="10" list="tickmarks-${tmpImg.getAttribute("id")}" style="width: 50%;">
-                                <datalist id="tickmarks-${tmpImg.getAttribute("id")}" style="display: flex; justify-content: space-between; width: 50%;">
-                                  <option value="2" label="2x">
-                                  <option value="3" label="3x">
-                                  <option value="4" label="4x">
-                                  <option value="5" label="5x">
-                                  <option value="6" label="6x">
-                                  <option value="7" label="7x">
-                                  <option value="8" label="8x">
-                                  <option value="9" label="9x">
-                                  <option value="10" label="10x">
-                                </datalist>
+                                <div style="display: flex; flex-direction: row; justify-content: center;">
+                                    <datalist id="tickmarks-${tmpImg.getAttribute("id")}" style="display: flex; justify-content: space-between; width: 50%">
+                                      <option value="2" label="2x">
+                                      <option value="3" label="3x">
+                                      <option value="4" label="4x">
+                                      <option value="5" label="5x">
+                                      <option value="6" label="6x">
+                                      <option value="7" label="7x">
+                                      <option value="8" label="8x">
+                                      <option value="9" label="9x">
+                                      <option value="10" label="10x">
+                                    </datalist>
+                                </div>
                             </div>
                         </div>
                     </div>
