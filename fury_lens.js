@@ -150,7 +150,6 @@ function createMagnifier(baseImg){
     },800);
 }
 
-
 function createDOMSkeleton(baseImg)
 {
     let label1, label2;
@@ -172,6 +171,20 @@ function createDOMSkeleton(baseImg)
             break;
     }
 
+    function createOptions() {
+        let optionItens = "";
+        for (let i = FuryLens.configs.minMagnifierZoom; i <= FuryLens.configs.maxMagnifierZoom; i++) {
+            optionItens += `<option value="${i}" label="${i}x">`;
+        }
+        return optionItens;
+    }
+
+    function setVisibilityRange(minRangeValue, maxRangeValue) {
+        return minRangeValue == maxRangeValue
+            ? "hidden"
+            : ""
+    }
+
     let r = setInterval(()=>{
         if(document.getElementById(baseImg) !== null){
             clearInterval(r);
@@ -182,9 +195,7 @@ function createDOMSkeleton(baseImg)
                     <div style="border: solid 1px ; border-radius: 4px; margin-bottom: 20px; text-align: center !important">
                         <div 
                             style="padding: 10px 0 10px 5px"
-                            ${(()=>{
-                                return FuryLens.configs.minMagnifierSize == FuryLens.configs.maxMagnifierSize ? "hidden" : ""
-                            })()}
+                            ${setVisibilityRange(FuryLens.configs.minMagnifierSize, FuryLens.configs.maxMagnifierSize)}
                         >
                             <label>${label1}</label>
                             <div>
@@ -200,22 +211,14 @@ function createDOMSkeleton(baseImg)
                         </div>
                         <div 
                             style="padding: 10px 0 10px 5px"
-                            ${(()=>{
-                                return FuryLens.configs.minMagnifierZoom == FuryLens.configs.maxMagnifierZoom ? "hidden" : ""
-                            })()}
+                            ${setVisibilityRange(FuryLens.configs.minMagnifierZoom, FuryLens.configs.maxMagnifierZoom)}
                         >
                             <label>${label2}</label>
                             <div>
                                 <input type="range" id="zoomMagnifier-${tmpImg.getAttribute("id")}" value="${FuryLens.configs.minMagnifierZoom}" min="${FuryLens.configs.minMagnifierZoom}" max="${FuryLens.configs.maxMagnifierZoom}" list="tickmarks-${tmpImg.getAttribute("id")}" style="width: 50%;">
                                 <div style="display: flex; flex-direction: row; justify-content: center;">
                                     <datalist id="tickmarks-${tmpImg.getAttribute("id")}" style="display: flex; justify-content: space-between; width: 50%">
-                                      ${(()=>{
-                                            let optionItens = "";
-                                            for (let i = FuryLens.configs.minMagnifierZoom; i <= FuryLens.configs.maxMagnifierZoom; i++) {
-                                                optionItens += `<option value="${i}" label="${i}x">`;
-                                            }
-                                            return optionItens;
-                                        })()}
+                                      ${createOptions()}
                                     </datalist>
                                 </div>
                             </div>
