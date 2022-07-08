@@ -5,8 +5,17 @@ let FuryLens = {
     configs: {
         timeout: 5000, // Miliseconds
         language: "", // default language is pt-BR
-        maxMagnifierSize: 1000, // sized in pixel (px)
-        minMagnifierSize: 0 // sized in pixel (px)
+        maxMagnifierSize: 1000, // default max magnifier sized in pixel (px)
+        minMagnifierSize: 0, // default minimum magnifier sized in pixel (px)
+        minMagnifierZoom: 2, // default minimum magnifier zoom is 2x
+        maxMagnifierZoom: 10, //default max magnifier zoom is 10x
+    },
+    style: {
+        position: "top", // default position
+        borderRadius: 0, // default magnifier radius in pixel (px)
+        borderSize: 2, // default magnifier border size in pixel (px)
+        borderColor: "#A9A9A9", // default magnifier color
+        borderType: "solid" // default magnifier border type
     }
 }
 
@@ -26,10 +35,11 @@ function createZoom(img, magnifierValue, zoom){
     glass.style.cssText = `
       box-sizing: border-box;
       position: absolute;
-      border: 2px solid #A9A9A9;
+      border-radius: ${FuryLens.style.borderRadius}px;
+      border: ${FuryLens.style.borderSize}px ${FuryLens.style.borderType} ${FuryLens.style.borderColor};
       width: ${magnifierValue}px;
       height: ${magnifierValue}px;
-      cursor: none`;
+      cursor: none;`;
 
     /* Set background properties for the magnifier glass: */
     glass.style.backgroundImage = `url('${img.src}')`;
@@ -43,8 +53,8 @@ function createZoom(img, magnifierValue, zoom){
     glass.addEventListener("mousemove", moveMagnifier);
     img.addEventListener("mousemove", moveMagnifier);
     /*and also for touch screens:*/
-    //glass.addEventListener("touchmove", moveMagnifier);
-    //img.addEventListener("touchmove", moveMagnifier);
+    glass.addEventListener("touchmove", moveMagnifier);
+    img.addEventListener("touchmove", moveMagnifier);
 
     function moveMagnifier(e) {
         let pos, x, y;
@@ -170,7 +180,12 @@ function createDOMSkeleton(baseImg)
             document.getElementById(baseImg).outerHTML = `
                 <div style="margin-top: 30px">
                     <div style="border: solid 1px ; border-radius: 4px; margin-bottom: 20px; text-align: center !important">
-                        <div style="padding: 10px 0 10px 5px">
+                        <div 
+                            style="padding: 10px 0 10px 5px"
+                            ${(()=>{
+                                return FuryLens.configs.minMagnifierSize == FuryLens.configs.maxMagnifierSize ? "hidden" : ""
+                            })()}
+                        >
                             <label>${label1}</label>
                             <div>
                                 <input 
@@ -180,25 +195,27 @@ function createDOMSkeleton(baseImg)
                                     min="${FuryLens.configs.minMagnifierSize}" 
                                     max="${FuryLens.configs.maxMagnifierSize}" 
                                     style="width: 50%;"
-                                    disabled="${FuryLens.configs.minMagnifierSize == FuryLens.configs.maxMagnifierSize}"
                                 >
                             </div>
                         </div>
-                        <div style="padding: 10px 0 10px 5px">
+                        <div 
+                            style="padding: 10px 0 10px 5px"
+                            ${(()=>{
+                                return FuryLens.configs.minMagnifierZoom == FuryLens.configs.maxMagnifierZoom ? "hidden" : ""
+                            })()}
+                        >
                             <label>${label2}</label>
                             <div>
-                                <input type="range" id="zoomMagnifier-${tmpImg.getAttribute("id")}" value="2" min="2" max="10" list="tickmarks-${tmpImg.getAttribute("id")}" style="width: 50%;">
+                                <input type="range" id="zoomMagnifier-${tmpImg.getAttribute("id")}" value="${FuryLens.configs.minMagnifierZoom}" min="${FuryLens.configs.minMagnifierZoom}" max="${FuryLens.configs.maxMagnifierZoom}" list="tickmarks-${tmpImg.getAttribute("id")}" style="width: 50%;">
                                 <div style="display: flex; flex-direction: row; justify-content: center;">
                                     <datalist id="tickmarks-${tmpImg.getAttribute("id")}" style="display: flex; justify-content: space-between; width: 50%">
-                                      <option value="2" label="2x">
-                                      <option value="3" label="3x">
-                                      <option value="4" label="4x">
-                                      <option value="5" label="5x">
-                                      <option value="6" label="6x">
-                                      <option value="7" label="7x">
-                                      <option value="8" label="8x">
-                                      <option value="9" label="9x">
-                                      <option value="10" label="10x">
+                                      ${(()=>{
+                                            let optionItens = "";
+                                            for (let i = FuryLens.configs.minMagnifierZoom; i <= FuryLens.configs.maxMagnifierZoom; i++) {
+                                                optionItens += `<option value="${i}" label="${i}x">`;
+                                            }
+                                            return optionItens;
+                                        })()}
                                     </datalist>
                                 </div>
                             </div>
