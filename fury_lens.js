@@ -313,7 +313,7 @@ function createMenuInSidePosition(baseImg){
     return `
         <div style="margin-top: 20px; display: flex; align-items: center; flex-direction: row">
             <div style="flex-direction: column; height:100%; width: 10%; border: solid 1px ; border-radius: 4px; margin-top: 30px; margin-bottom: 20px; margin-right: 20px; text-align: left !important">
-                <div style="padding: 10px 0 10px 5px; text-align: center !important;">
+                <div style="padding: 10px 0px; text-align: center !important;">
                     <label>${lang.label1}</label>
                 </div>
                 <div style="display: flex; align-items: stretch; padding: 15px 0px">
@@ -339,8 +339,8 @@ function createMenuInSidePosition(baseImg){
                 ${tmpImg.outerHTML}
             </div>
             <div style="flex-direction: column; height:100%; width: 10%; border: solid 1px ; border-radius: 4px; margin-top: 30px; margin-bottom: 20px; margin-left: 20px; text-align: left !important">
-                <div style="padding: 10px 0 10px 5px; text-align: center !important;" ${setVisibilityRange(FuryLens.configs.minMagnifierZoom, FuryLens.configs.maxMagnifierZoom)}>
-                    <label>${lang.label1}</label>
+                <div style="padding: 10px 0px; text-align: center !important;">
+                    <label>${lang.label2}</label>
                 </div>
                 <div style="display: flex; align-items: stretch; padding: 15px 0px">
                     <input 
