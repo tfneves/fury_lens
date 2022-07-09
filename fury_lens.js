@@ -4,11 +4,11 @@ let FuryLens = {
     },
     configs: {
         timeout: 5000, // Miliseconds
-        language: "", // default language is pt-BR
         maxMagnifierSize: 1000, // default max magnifier sized in pixel (px)
         minMagnifierSize: 0, // default minimum magnifier sized in pixel (px)
         minMagnifierZoom: 2, // default minimum magnifier zoom is 2x
         maxMagnifierZoom: 10, //default max magnifier zoom is 10x
+        language: "", // default language is pt-BR
     },
     style: {
         position: "top", // default position
@@ -152,82 +152,212 @@ function createMagnifier(baseImg){
 
 function createDOMSkeleton(baseImg)
 {
-    let label1, label2;
-
-    switch (FuryLens.configs.language){
-        case "en":
-            label1 = "Magnifier size";
-            label2 = "Magnification size";
-            break;
-
-        case "es":
-            label1 = "Tamaño de gafa"
-            label2 = "Tamaño de la ampliación"
-            break;
-
-        default:
-            label1 = "Tamanho da lupa"
-            label2 = "Zoom da lupa"
-            break;
-    }
-
-    function createOptions() {
-        let optionItens = "";
-        for (let i = FuryLens.configs.minMagnifierZoom; i <= FuryLens.configs.maxMagnifierZoom; i++) {
-            optionItens += `<option value="${i}" label="${i}x">`;
-        }
-        return optionItens;
-    }
-
-    function setVisibilityRange(minRangeValue, maxRangeValue) {
-        return minRangeValue == maxRangeValue
-            ? "hidden"
-            : ""
-    }
-
     let r = setInterval(()=>{
         if(document.getElementById(baseImg) !== null){
             clearInterval(r);
 
-            let tmpImg = document.getElementById(baseImg);
-            document.getElementById(baseImg).outerHTML = `
-                <div style="margin-top: 30px">
-                    <div style="border: solid 1px ; border-radius: 4px; margin-bottom: 20px; text-align: center !important">
-                        <div 
-                            style="padding: 10px 0 10px 5px"
-                            ${setVisibilityRange(FuryLens.configs.minMagnifierSize, FuryLens.configs.maxMagnifierSize)}
-                        >
-                            <label>${label1}</label>
-                            <div>
-                                <input 
-                                    type="range" 
-                                    id="sizeMagnifier-${tmpImg.getAttribute("id")}" 
-                                    value="${FuryLens.configs.minMagnifierSize}" 
-                                    min="${FuryLens.configs.minMagnifierSize}" 
-                                    max="${FuryLens.configs.maxMagnifierSize}" 
-                                    style="width: 50%;"
-                                >
-                            </div>
-                        </div>
-                        <div 
-                            style="padding: 10px 0 10px 5px"
-                            ${setVisibilityRange(FuryLens.configs.minMagnifierZoom, FuryLens.configs.maxMagnifierZoom)}
-                        >
-                            <label>${label2}</label>
-                            <div>
-                                <input type="range" id="zoomMagnifier-${tmpImg.getAttribute("id")}" value="${FuryLens.configs.minMagnifierZoom}" min="${FuryLens.configs.minMagnifierZoom}" max="${FuryLens.configs.maxMagnifierZoom}" list="tickmarks-${tmpImg.getAttribute("id")}" style="width: 50%;">
-                                <div style="display: flex; flex-direction: row; justify-content: center;">
-                                    <datalist id="tickmarks-${tmpImg.getAttribute("id")}" style="display: flex; justify-content: space-between; width: 50%">
-                                      ${createOptions()}
-                                    </datalist>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="position: relative; box-sizing: border-box;">${tmpImg.outerHTML}</div>
-                    </div>
-                </div>`;
+            switch ((FuryLens.style.position).toLowerCase()){
+                case "bottom":
+                    document.getElementById(baseImg).outerHTML = createMenuInBottomPosition(baseImg);
+                    break;
+
+                case "side":
+                    document.getElementById(baseImg).outerHTML = createMenuInSidePosition(baseImg);
+                    return;
+
+                default:
+                    document.getElementById(baseImg).outerHTML = createMenuInTopPosition(baseImg);
+                    break;
+            }
         }
     },800);
+}
+
+function createOptions() {
+    let optionItens = "";
+    for (let i = FuryLens.configs.minMagnifierZoom; i <= FuryLens.configs.maxMagnifierZoom; i++) {
+        optionItens += `<option value="${i}" label="${i}x">`;
+    }
+    return optionItens;
+}
+
+function setVisibilityRange(minRangeValue, maxRangeValue) {
+    return minRangeValue == maxRangeValue
+        ? "hidden"
+        : ""
+}
+
+function setLanguage(lang) {
+    switch (lang.toLowerCase()){
+        case "en":
+            return {label1: "Magnifier size", label2: "Magnification size"}
+
+        case "es":
+            return {label1: "Tamaño de gafa", label2: "Tamaño de la ampliación"}
+
+        default:
+            return {label1: "Tamanho da lupa", label2: "Zoom da lupa"}
+    }
+}
+
+function createMenuInTopPosition(baseImg) {
+
+    let lang = setLanguage(FuryLens.configs.language);
+    let tmpImg = document.getElementById(baseImg);
+
+    return `
+    <div style="margin-top: 30px">
+        <div style="border: solid 1px ; border-radius: 4px; margin-bottom: 20px; text-align: center !important">
+            <div 
+                style="padding: 10px 0 10px 5px"
+                ${setVisibilityRange(FuryLens.configs.minMagnifierSize, FuryLens.configs.maxMagnifierSize)}
+            >
+                <label>${lang.label1}</label>
+                <div>
+                    <input 
+                        type="range" 
+                        id="sizeMagnifier-${tmpImg.getAttribute("id")}" 
+                        value="${FuryLens.configs.minMagnifierSize}" 
+                        min="${FuryLens.configs.minMagnifierSize}" 
+                        max="${FuryLens.configs.maxMagnifierSize}" 
+                        style="width: 50%;"
+                        list="tickmarks-${tmpImg.getAttribute("id")}-1"
+                    >
+                    <div style="display: flex; flex-direction: row; justify-content: center;">
+                        <datalist id="tickmarks-${tmpImg.getAttribute("id")}-1" style="display: flex; justify-content: space-between; width: 50%">
+                              <option value="${FuryLens.configs.minMagnifierSize}" label="${FuryLens.configs.minMagnifierSize}">
+                              <option value="${FuryLens.configs.maxMagnifierSize/2}" label="${FuryLens.configs.maxMagnifierSize/2}">
+                              <option value="${FuryLens.configs.maxMagnifierSize}" label="${FuryLens.configs.maxMagnifierSize}">
+                        </datalist>
+                    </div>
+                </div>
+            </div>
+            <div 
+                style="padding: 10px 0 10px 5px"
+                ${setVisibilityRange(FuryLens.configs.minMagnifierZoom, FuryLens.configs.maxMagnifierZoom)}
+            >
+                <label>${lang.label2}</label>
+                <div>
+                    <input type="range" id="zoomMagnifier-${tmpImg.getAttribute("id")}" value="${FuryLens.configs.minMagnifierZoom}" min="${FuryLens.configs.minMagnifierZoom}" max="${FuryLens.configs.maxMagnifierZoom}" list="tickmarks-${tmpImg.getAttribute("id")}" style="width: 50%;">
+                    <div style="display: flex; flex-direction: row; justify-content: center;">
+                        <datalist id="tickmarks-${tmpImg.getAttribute("id")}" style="display: flex; justify-content: space-between; width: 50%">
+                          ${createOptions()}
+                        </datalist>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div style="position: relative; box-sizing: border-box;">${tmpImg.outerHTML}</div>
+        </div>
+    </div>`;
+}
+
+function createMenuInBottomPosition(baseImg){
+
+    let lang = setLanguage(FuryLens.configs.language);
+    let tmpImg = document.getElementById(baseImg);
+
+    return `
+    <div style="margin-top: 30px">
+        <div>
+            <div style="position: relative; box-sizing: border-box;">${tmpImg.outerHTML}</div>
+        </div>
+        <div style="border: solid 1px ; border-radius: 4px; margin: 20px 0px; text-align: center !important">
+            <div 
+                style="padding: 10px 0 10px 5px"
+                ${setVisibilityRange(FuryLens.configs.minMagnifierSize, FuryLens.configs.maxMagnifierSize)}
+            >
+                <label>${lang.label1}</label>
+                <div>
+                    <input 
+                        type="range" 
+                        id="sizeMagnifier-${tmpImg.getAttribute("id")}" 
+                        value="${FuryLens.configs.minMagnifierSize}" 
+                        min="${FuryLens.configs.minMagnifierSize}" 
+                        max="${FuryLens.configs.maxMagnifierSize}" 
+                        style="width: 50%;"
+                        list="tickmarks-${tmpImg.getAttribute("id")}-1"
+                    >
+                    <div style="display: flex; flex-direction: row; justify-content: center;">
+                        <datalist id="tickmarks-${tmpImg.getAttribute("id")}-1" style="display: flex; justify-content: space-between; width: 50%">
+                              <option value="${FuryLens.configs.minMagnifierSize}" label="${FuryLens.configs.minMagnifierSize}">
+                              <option value="${FuryLens.configs.maxMagnifierSize/2}" label="${FuryLens.configs.maxMagnifierSize/2}">
+                              <option value="${FuryLens.configs.maxMagnifierSize}" label="${FuryLens.configs.maxMagnifierSize}">
+                        </datalist>
+                    </div>
+                </div>
+            </div>
+            <div 
+                style="padding: 10px 0 10px 5px"
+                ${setVisibilityRange(FuryLens.configs.minMagnifierZoom, FuryLens.configs.maxMagnifierZoom)}
+            >
+                <label>${lang.label2}</label>
+                <div>
+                    <input type="range" id="zoomMagnifier-${tmpImg.getAttribute("id")}" value="${FuryLens.configs.minMagnifierZoom}" min="${FuryLens.configs.minMagnifierZoom}" max="${FuryLens.configs.maxMagnifierZoom}" list="tickmarks-${tmpImg.getAttribute("id")}" style="width: 50%;">
+                    <div style="display: flex; flex-direction: row; justify-content: center;">
+                        <datalist id="tickmarks-${tmpImg.getAttribute("id")}" style="display: flex; justify-content: space-between; width: 50%">
+                          ${createOptions()}
+                        </datalist>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+function createMenuInSidePosition(baseImg){
+    let lang = setLanguage(FuryLens.configs.language);
+    let tmpImg = document.getElementById(baseImg);
+
+    return `
+        <div style="margin-top: 20px; display: flex; align-items: center; flex-direction: row">
+            <div style="flex-direction: column; height:100%; width: 10%; border: solid 1px ; border-radius: 4px; margin-top: 30px; margin-bottom: 20px; margin-right: 20px; text-align: left !important">
+                <div style="padding: 10px 0 10px 5px; text-align: center !important;">
+                    <label>${lang.label1}</label>
+                </div>
+                <div style="display: flex; align-items: stretch; padding: 15px 0px">
+                    <input 
+                        type="range" 
+                        id="sizeMagnifier-${tmpImg.getAttribute("id")}" 
+                        value="${FuryLens.configs.minMagnifierSize}" 
+                        min="${FuryLens.configs.minMagnifierSize}" 
+                        max="${FuryLens.configs.maxMagnifierSize}" 
+                        style="width: 50%; -webkit-appearance: slider-vertical;"
+                        list="tickmarks-${tmpImg.getAttribute("id")}"
+                    >
+                    <div>
+                        <datalist id="tickmarks-${tmpImg.getAttribute("id")}" style="display: flex; flex-direction: column-reverse; justify-content: space-between; height:100%; width: 50%">
+                              <option value="${FuryLens.configs.minMagnifierSize}" label="${FuryLens.configs.minMagnifierSize}">
+                              <option value="${FuryLens.configs.maxMagnifierSize/2}" label="${FuryLens.configs.maxMagnifierSize/2}">
+                              <option value="${FuryLens.configs.maxMagnifierSize}" label="${FuryLens.configs.maxMagnifierSize}">
+                        </datalist>
+                    </div>
+                </div>
+            </div>
+            <div style="position: relative; box-sizing: border-box;">
+                ${tmpImg.outerHTML}
+            </div>
+            <div style="flex-direction: column; height:100%; width: 10%; border: solid 1px ; border-radius: 4px; margin-top: 30px; margin-bottom: 20px; margin-left: 20px; text-align: left !important">
+                <div style="padding: 10px 0 10px 5px; text-align: center !important;" ${setVisibilityRange(FuryLens.configs.minMagnifierZoom, FuryLens.configs.maxMagnifierZoom)}>
+                    <label>${lang.label1}</label>
+                </div>
+                <div style="display: flex; align-items: stretch; padding: 15px 0px">
+                    <input 
+                        type="range" 
+                        id="zoomMagnifier-${tmpImg.getAttribute("id")}" 
+                        value="${FuryLens.configs.minMagnifierZoom}" 
+                        min="${FuryLens.configs.minMagnifierZoom}" 
+                        max="${FuryLens.configs.maxMagnifierZoom}" 
+                        style="width: 50%; -webkit-appearance: slider-vertical;"
+                        list="tickmarks-${tmpImg.getAttribute("id")}-1"
+                    >
+                    <div>
+                        <datalist id="tickmarks-${tmpImg.getAttribute("id")}-1" style="display: flex; flex-direction: column-reverse; justify-content: space-between; height:100%; width: 50%">
+                              ${createOptions()}
+                        </datalist>
+                    </div>
+                </div>
+            </div>
+        </div>`;
 }
