@@ -31,7 +31,6 @@ observer.observe(document.querySelector("body"), config);
 
 
 function findImageToLens(element) {
-    console.log(element)
     if(
         element.nodeName === "IMG" &&
         element.hasAttribute(FuryLens.configs.defaultFuryLensAttributeName) &&
