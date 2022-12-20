@@ -1,7 +1,4 @@
 let FuryLens = {
-    magnifier: (img) => {
-        createMagnifier(img);
-    },
     configs: {
         timeout: 5000, // Miliseconds
         maxMagnifierSize: 1000, // default max magnifier sized in pixel (px)
@@ -9,13 +6,43 @@ let FuryLens = {
         minMagnifierZoom: 2, // default minimum magnifier zoom is 2x
         maxMagnifierZoom: 10, //default max magnifier zoom is 10x
         language: "", // default language is pt-BR
+        appliedLensKeyword: "magnified-image", // default keyword to define if the image was enlarged with furyLens
+        defaultFuryLensAttributeName: "furylens" // default keyword to define whether FuryLens should be applied to the image
     },
     style: {
         position: "top", // default position
         borderRadius: 0, // default magnifier radius in pixel (px)
         borderSize: 2, // default magnifier border size in pixel (px)
-        borderColor: "#A9A9A9", // default magnifier color
+        borderColor: "#A9A9A9", // default magnifier border color
         borderType: "solid" // default magnifier border type
+    }
+}
+
+const config = { attributes: true, childList: true, subtree: true };
+const callback = function(mutationList, observer) {
+    for(const mutation of mutationList) {
+        mutation.addedNodes.forEach((node)=>{
+            findImageToLens(node)
+        });
+    }
+};
+const observer = new MutationObserver(callback);
+observer.observe(document.querySelector("body"), config);
+
+
+function findImageToLens(element) {
+    console.log(element)
+    if(
+        element.nodeName === "IMG" &&
+        element.hasAttribute(FuryLens.configs.defaultFuryLensAttributeName) &&
+        !element.hasAttribute(FuryLens.configs.appliedLensKeyword)
+    ) {
+        createMagnifier(element.getAttribute("id"));
+    }
+    else if(element.hasChildNodes()){
+        element.childNodes.forEach((childElement)=>{
+            findImageToLens(childElement);
+        });
     }
 }
 
@@ -204,6 +231,7 @@ function createMenuInTopPosition(baseImg) {
 
     let lang = setLanguage(FuryLens.configs.language);
     let tmpImg = document.getElementById(baseImg);
+    tmpImg.setAttribute(FuryLens.configs.appliedLensKeyword,"")
 
     return `
     <div style="margin-top: 30px">
@@ -257,6 +285,7 @@ function createMenuInBottomPosition(baseImg){
 
     let lang = setLanguage(FuryLens.configs.language);
     let tmpImg = document.getElementById(baseImg);
+    tmpImg.setAttribute(FuryLens.configs.appliedLensKeyword,"")
 
     return `
     <div style="margin-top: 30px">
@@ -309,6 +338,7 @@ function createMenuInBottomPosition(baseImg){
 function createMenuInSidePosition(baseImg){
     let lang = setLanguage(FuryLens.configs.language);
     let tmpImg = document.getElementById(baseImg);
+    tmpImg.setAttribute(FuryLens.configs.appliedLensKeyword,"")
 
     return `
         <div style="margin-top: 20px; display: flex; align-items: center; flex-direction: row">
