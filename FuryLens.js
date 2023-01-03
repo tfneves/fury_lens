@@ -1,6 +1,8 @@
 let FuryLens = {
+    magnifier: (imgId) => {
+        createMagnifier(imgId)
+    },
     configs: {
-        timeout: 5000, // Miliseconds
         maxMagnifierSize: 1000, // default max magnifier sized in pixel (px)
         minMagnifierSize: 0, // default minimum magnifier sized in pixel (px)
         minMagnifierZoom: 2, // default minimum magnifier zoom is 2x
