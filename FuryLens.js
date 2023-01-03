@@ -31,18 +31,20 @@ observer.observe(document.querySelector("body"), config);
 
 
 function findImageToLens(element) {
-    if(
-        element.nodeName === "IMG" &&
-        element.hasAttribute(FuryLens.configs.defaultFuryLensAttributeName) &&
-        !element.hasAttribute(FuryLens.configs.appliedLensKeyword)
-    ) {
-        createMagnifier(element.getAttribute("id"));
-    }
-    else if(element.hasChildNodes()){
-        element.childNodes.forEach((childElement)=>{
-            findImageToLens(childElement);
-        });
-    }
+    try{
+        if(
+            element.nodeName === "IMG" &&
+            element.hasAttribute(FuryLens.configs.defaultFuryLensAttributeName) &&
+            !element.hasAttribute(FuryLens.configs.appliedLensKeyword)
+        ) {
+            createMagnifier(element.getAttribute("id"));
+        }
+        else if(element.hasChildNodes()){
+            element.childNodes.forEach((childElement)=>{
+                findImageToLens(childElement);
+            });
+        }
+    }catch(ignored){}
 }
 
 
