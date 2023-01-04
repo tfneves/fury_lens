@@ -1,7 +1,4 @@
 let FuryLens = {
-    magnifier: (imgId) => {
-        createMagnifier(imgId)
-    },
     configs: {
         maxMagnifierSize: 1000, // default max magnifier sized in pixel (px)
         minMagnifierSize: 0, // default minimum magnifier sized in pixel (px)
@@ -19,6 +16,8 @@ let FuryLens = {
         borderType: "solid" // default magnifier border type
     }
 }
+
+document.addEventListener("DOMContentLoaded", forceMutationOnStaticHTML);
 
 const config = { attributes: true, childList: true, subtree: true };
 const callback = function(mutationList, observer) {
@@ -393,4 +392,9 @@ function createMenuInSidePosition(baseImg){
                 </div>
             </div>
         </div>`;
+}
+
+
+function forceMutationOnStaticHTML() {
+    document.body.innerHTML += '<spam></spam>';
 }

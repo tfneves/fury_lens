@@ -5,12 +5,13 @@
         <title>Example FuryLens</title>
     </head>
     <body>
-        <img id="img-example" src="https://conteudo.mercadopago.com.br/hs-fs/hubfs/imagens/blog/blog_mp_pix.png?width=670&name=blog_mp_pix.png" alt="Img teste">
+        <img furylens id="img-example" src="https://conteudo.mercadopago.com.br/hs-fs/hubfs/imagens/blog/blog_mp_pix.png?width=670&name=blog_mp_pix.png" alt="Img teste">
 
         <script src="../FuryLens.js"></script>
 
         <script>
-            FuryLens.magnifier("img-example");
+            FuryLens.configs.language = "es";
+            FuryLens.style.borderRadius = 20;
         </script>
     </body>
 </html>
