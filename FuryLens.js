@@ -1,4 +1,5 @@
 let FuryLens = {
+    testInit: showWelcomeMessage,
     configs: {
         maxMagnifierSize: 1000, // default max magnifier sized in pixel (px)
         minMagnifierSize: 0, // default minimum magnifier sized in pixel (px)
@@ -397,4 +398,28 @@ function createMenuInSidePosition(baseImg){
 
 function forceMutationOnStaticHTML() {
     document.body.innerHTML += '<spam></spam>';
+}
+
+
+function showWelcomeMessage() {
+    console.log(`
+ __          __  _                            _         
+ \\ \\        / / | |                          | |        
+  \\ \\  /\\  / /__| | ___ ___  _ __ ___   ___  | |_ ___   
+   \\ \\/  \\/ / _ \\ |/ __/ _ \\| |_ \\ _ \\ / _ \\ | __/ _ \\  
+    \\  /\\  /  __/ | (_| (_) | | | | | |  __/ | || (_) | 
+     \\/  \\/ \\___|_|\\___\\___/|_| |_| |_|\\___|  \\__\\___/  
+                                                        
+      ______                  _                         
+     |  ____|                | |                        
+     | |__ _   _ _ __ _   _  | |     ___ _ __  ___      
+     |  __| | | |  __| | | | | |    / _ \\ |_ \\/ __|     
+     | |  | |_| | |  | |_| | | |___|  __/ | | \\__ \\     
+     |_|   \\__,_|_|   \\__, | |______\\___|_| |_|___/     
+                       __/ |                            
+                      |___/                             
+                            
+                          Created by Thomaz Ferreira
+                          Version: 0.3.5
+`);
 }
