@@ -36,10 +36,12 @@
 <br>
 
 ## Cómo agregar Fury Lens a tu proyecto
-<ol>
-  <li>Copiar y pegar el archivo FuryLens.js en el interior de la carpeta donde está la documentación de su proyecto.</li>
-  <li>Ir en el archivo HTML de su documentación y agregar la línea abajo, donde <em><strong>CAMINO_DE_FURYLENS</strong></em> debe ser cambiado para la ruta donde colocó el archivo FuryLens.js</li>
-</ol>
+<span style="font-size: 15px">
+  <ol>
+    <li>Copiar y pegar el archivo <a href="https://github.com/tfneves/fury_lens/blob/a9b5f34eaceba04c19b2d0316126eca0e587e3eb/FuryLens.js">FuryLens.js</a> en el interior de la carpeta donde está la documentación de su proyecto.</li>
+    <li>Ir en el archivo HTML de su documentación y agregar la línea abajo, donde <em><strong>CAMINO_DE_FURYLENS</strong></em> debe ser cambiado para la ruta donde colocó el archivo FuryLens.js</li>
+  </ol>
+</span>
 
 ``` html
 <script src="CAMINO_DE_FURYLENS"></script>
